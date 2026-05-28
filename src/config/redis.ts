@@ -8,16 +8,15 @@ export const REDIS_CONFIG = {
     password: process.env.REDIS_PASSWORD || undefined,
 };
 
-export const RESULT_TTL_SECONDS = 600; // 10 minutes
+export const RESULT_TTL = parseInt(process.env.RESULT_TTL ?? '300');
 
-export async function createRedisClient() {
-    const client = createClient(REDIS_CONFIG);
+export const redisClient = createClient(REDIS_CONFIG);
 
-    client.on('error', (err: unknown) => {
-        console.error('Redis Client Error:', err);
-    });
+redisClient.on('error', (err) => console.error('[Redis] Error:', err));
 
-    await client.connect();
-    console.log('Connected to Redis');
-    return client;
-}
+export async function connectRedis(): Promise<void> {
+    if (!redisClient.isOpen) {
+        await redisClient.connect();
+        console.log('[Redis] Connected on port', process.env.REDIS_PORT ?? '6397');
+    }
+};
