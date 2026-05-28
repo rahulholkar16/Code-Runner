@@ -1,10 +1,12 @@
+import { IApiResponse } from "../types/index.js";
+
 class ApiResponse <T = any> implements IApiResponse<T> {
     statusCode: number;
-    message: string;
+    message?: string;
     success: boolean;
     data?: T;
 
-    constructor(statusCode: number, message: string, data?: T) {
+    constructor(statusCode: number, message?: string, data?: T) {
         this.statusCode = statusCode;
         this.message = message;
         this.success = statusCode < 400;
